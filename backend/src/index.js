@@ -2,12 +2,15 @@ import 'dotenv/config';
 import express from 'express'; 
 import cors from 'cors'; 
 import pool from './database.js'; 
+import { getAllProducts } from './controllers/productsController.js';
+import productsRouters from './routes/productsRouters.js'
 
 const app = express();
 const PORT = process.env.PORT || 3000
-
+    
 app.use(cors());
 app.use(express.json());
+app.use('/api/products', productsRouters);
 
 app.get('/', (req, res) => {
     res.json({'Mensagem': 'API funcionando normalmente'})
@@ -24,4 +27,4 @@ conexaoComBD().catch(err => {
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`)
-}) 
+})  
