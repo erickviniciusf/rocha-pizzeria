@@ -2,7 +2,7 @@ import db from '../database.js'
 
 export async function getAllProducts(req, res) {
     try {
-        const products = await db.query('SELECT * FROM products'); 
+        const [products] = await db.query('SELECT * FROM products'); 
         res.status(200).json ({
             success: true,
             data: products,

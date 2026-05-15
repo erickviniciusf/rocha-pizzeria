@@ -4,6 +4,9 @@ import cors from 'cors';
 import pool from './database.js'; 
 import { getAllProducts } from './controllers/productsController.js';
 import productsRouters from './routes/productsRouters.js'
+import ordersRouters from './routes/ordersRouters.js'
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -11,6 +14,7 @@ const PORT = process.env.PORT || 3000
 app.use(cors());
 app.use(express.json());
 app.use('/api/products', productsRouters);
+app.use('/api/orders', ordersRouters);
 
 app.get('/', (req, res) => {
     res.json({'Mensagem': 'API funcionando normalmente'})
