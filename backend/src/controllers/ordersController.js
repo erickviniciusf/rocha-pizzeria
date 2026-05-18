@@ -1,5 +1,6 @@
 import { CLIENT_RENEG_LIMIT } from 'node:tls';
 import db from '../database.js'
+import { stat } from 'node:fs';
 
 export async function POSTcreateOrder(req, res) {
     try {
@@ -33,3 +34,38 @@ export async function POSTcreateOrder(req, res) {
     }
 }
 
+// API QUE BUSCA O PEDIDO E DEVOLVE COM O STATUS ATUALIZADO 
+
+export async function PUTupdateOrderStatus(req, res) {
+    try {
+        const { id } = req.params;
+        const { status } = req.body; 
+
+        if (!status) {
+            return res.status(400).json({
+                success: false,
+                message: "O campo status é obrigatorio."
+            });
+        }
+            const query = 'UPDATE orders SET status = ? WHERE id = ?';
+            const [result] = await db.query(query, [status, id]);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Pedido não encontrado. "
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: `Status do pedido ${id} atualizado para '${status}' com sucesso!`
+            });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+
+}

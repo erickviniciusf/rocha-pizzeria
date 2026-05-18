@@ -13,8 +13,8 @@ const PORT = process.env.PORT || 3000
     
 app.use(cors());
 app.use(express.json());
-app.use('/api/products', productsRouters);
-app.use('/api/orders', ordersRouters);
+app.use('/api', productsRouters);
+app.use('/api', ordersRouters);
 
 app.get('/', (req, res) => {
     res.json({'Mensagem': 'API funcionando normalmente'})
