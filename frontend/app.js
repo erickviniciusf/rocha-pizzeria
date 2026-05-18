@@ -93,24 +93,26 @@ window.adicionarAoCarrinho = function(id) {
 
 function atualizarInterfaceCarrinho() {
     cartItemsContainer.innerHTML = '';
+    const floatingCart = document.getElementById('floating-cart');
+    const floatingCount = document.getElementById('floating-cart-count');
+    const floatingTotal = document.getElementById('floating-cart-total');
 
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = `<p class="text-gray-400 text-sm text-center py-4">Seu carrinho está vazio.</p>`;
         checkoutForm.classList.add('hidden');
-        btnLimparCarrinho.classList.add('hidden'); //  Esconde o botão se estiver vazio
+        btnLimparCarrinho.classList.add('hidden'); 
         cartCountElement.innerText = '0';
         cartTotalElement.innerText = 'R$ 0,00';
+        
+   
+        if (floatingCart) floatingCart.classList.add('hidden');
         return;
     }
 
-    // Se o código continuar aqui embaixo, significa que tem itens!
-    btnLimparCarrinho.classList.remove('hidden'); //  Mostra o botão de limpar
+    btnLimparCarrinho.classList.remove('hidden'); 
 
     let totalGeral = 0;
     let totalItens = 0;
-    
-    // ... resto do seu código da função atualizarInterfaceCarrinho igualzinho ...
-
     
     cart.forEach(item => {
         const subtotal = item.price * item.quantity;
@@ -136,8 +138,14 @@ function atualizarInterfaceCarrinho() {
     cartTotalElement.innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
 
     checkoutForm.classList.remove('hidden');
-}
 
+  
+    if (floatingCart && floatingCount && floatingTotal) {
+        floatingCart.classList.remove('hidden');
+        floatingCount.innerText = totalItens;
+        floatingTotal.innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+    }
+}
 window.removerDoCarrinho = function(id) {
     const index = cart.findIndex(item => item.product_id === id);
 
