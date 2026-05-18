@@ -4,7 +4,7 @@ A web-based digital menu for a small pizzeria, allowing customers to place order
 
 ## About the Project
 
-Small pizzerias often rely on informal order-taking via WhatsApp, which leads to miscommunication, missing information, and unformatted messages. This project solves that by providing a simple digital menu where customers can browse products, build their order, and submit it — sending a formatted message automatically to the owner's WhatsApp.
+Small pizzerias often rely on informal order-taking via WhatsApp, which leads to miscommunication, missing information, and unformatted messages. This project solves that by providing a simple digital menu where customers can browse products, build their order, and submit it — sending a formatted message automatically to the owner's WhatsApp..
 
 ## User Profile
 
