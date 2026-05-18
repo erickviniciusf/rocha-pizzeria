@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzaria dos Rocha</title>
+    <link rel="icon" type="image/png" href="./favicon/local_pizza_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">
+                             <!-- Chamando o tailwind css -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <header class="bg-red-600 text-white text-center py-8 shadow-md">
+        <h1 class="text-4xl font-extrabold tracking-wide">PIZZARIA DOS ROCHA!</h1>
+        <p class="text-sm mt-2 opacity-90">O verdadeiro sabor da pizza na sua casa</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <section class="md:col-span-2">
+            <h2 class="text-2xl font-bold mb-6 border-b-2 border-red-500 pb-2">🍕 Nosso Cardápio</h2>
+            <div id="cardapio" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <p class="text-gray-500">Carregando sabores deliciosos...</p>
+            </div>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-lg h-fit border border-gray-100">
+            <h2 class="text-2xl font-bold mb-4 flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                    <span id="cart-count" class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">0</span>
+                    🛒 Seu Carrinho
+                    <button id="btn-limpar-carrinho" onclick="limparCarrinho()" class="text-xs text-gray-400 hover:text-red-500 font-medium transition-colors hidden">
+                        Limpar tudo
+                    </span>
+                </h2>
+            </button>
+            
+            <div id="cart-items" class="space-y-4 max-h-60 overflow-y-auto mb-4">
+                <p class="text-gray-400 text-sm text-center py-4">Seu carrinho está vazio.</p>
+            </div>
+
+            <div class="border-t pt-4 mb-6 flex justify-between font-bold text-lg">
+                <span>Total:</span>
+                <span id="cart-total">R$ 0,00</span>
+            </div>
+
+            <form id="checkout-form" class="space-y-3 hidden">
+                <h3 class="font-semibold text-gray-700 border-b pb-1">Dados de Entrega</h3>
+                <div>
+                    <label class="text-xs text-gray-500 font-medium">Nome</label>
+                    <input type="text" id="form-name" required class="w-full p-2 border rounded text-sm focus:outline-red-500">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500 font-medium">WhatsApp</label>
+                    <input type="tel" id="form-phone" required placeholder="(00) 00000-0000" class="w-full p-2 border rounded text-sm focus:outline-red-500">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500 font-medium">Endereço Completo</label>
+                    <input type="text" id="form-address" required placeholder="Rua, número, bairro..." class="w-full p-2 border rounded text-sm focus:outline-red-500">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500 font-medium">Forma de Pagamento</label>
+                    <select id="form-payment" class="w-full p-2 border rounded text-sm bg-white focus:outline-red-500">
+                        <option value="Pix">Pix</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded transition-all mt-4">
+                    🟢 Enviar Pedido para o WhatsApp
+                </button>
+            </form>
+        </section>
+
+    </main>
+                    
+    <!--Chamando o arquivo JS para o html-->
+    <script src="app.js"></script>
+</body>
+</html>
