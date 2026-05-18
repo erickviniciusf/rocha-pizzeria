@@ -1,5 +1,5 @@
 // URL DA API
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://prescholastic-hiedi-reciprocative.ngrok-free.dev';
 
 // Estado global da aplicação (Carrinho)
 let cart = [];
