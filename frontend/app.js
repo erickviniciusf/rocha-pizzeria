@@ -12,17 +12,25 @@ const btnLimparCarrinho = document.getElementById('btn-limpar-carrinho');
 // 1. Função para buscar os produtos do Banco de Dados
 async function carregarProdutos() {
     try {
-        const response = await fetch(`${API_URL}/api/products`);
+        
+        const response = await fetch(`${API_URL}/api/products`, {
+            method: 'GET',
+            headers: {
+                'ngrok-skip-browser-warning': 'true'
+            }
+        }); 
+        
         const respostaSubmetida = await response.json();
         
         // Pega apenas a lista que está dentro de .data
-        const listaDeProdutos = respostaSubmetida.data;
+      const listaDeProdutos = respostaSubmetida.data || respostaSubmetida;
         
         // Guarda no nosso estado global para uso futuro no carrinho
         produtosDisponiveis = listaDeProdutos;
-
+ 
         // Limpa a mensagem de "Carregando..."
         cardapioContainer.innerHTML = '';
+
 
         // AGORA SIM: Executa o loop na lista certa de produtos!
         listaDeProdutos.forEach(produto => {
