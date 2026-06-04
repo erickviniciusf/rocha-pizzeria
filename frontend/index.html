@@ -17,7 +17,21 @@
     <main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
         
         <section class="md:col-span-2">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-red-500 pb-2">🍕 Nosso Cardápio</h2>
+            <h2 class="text-2xl font-bold mb-4 border-b-2 border-red-500 pb-2">🍕 Nosso Cardápio</h2>
+            
+            <!-- Filtro de Categorias -->
+            <div class="flex gap-2 mb-6" id="category-filters">
+                <button onclick="filtrarCategoria('all')" id="btn-cat-all" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-red-600 text-white shadow-sm hover:bg-red-700 select-none">
+                    Todos
+                </button>
+                <button onclick="filtrarCategoria('food')" id="btn-cat-food" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 select-none">
+                    🍕 Pizzas
+                </button>
+                <button onclick="filtrarCategoria('drink')" id="btn-cat-drink" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 select-none">
+                    🥤 Bebidas
+                </button>
+            </div>
+
             <div id="cardapio" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <p class="text-gray-500">Carregando sabores deliciosos...</p>
             </div>

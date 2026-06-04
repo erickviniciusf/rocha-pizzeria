@@ -4,6 +4,7 @@ const API_URL = 'https://prescholastic-hiedi-reciprocative.ngrok-free.dev';
 // Estado global da aplicação (Carrinho)
 let cart = [];
 let produtosDisponiveis = [];
+let categoriaAtiva = 'all';
 
 // Elementos do DOM (HTML)
 const cardapioContainer = document.getElementById('cardapio');
@@ -28,36 +29,109 @@ async function carregarProdutos() {
         // Guarda no nosso estado global para uso futuro no carrinho
         produtosDisponiveis = listaDeProdutos;
  
-        // Limpa a mensagem de "Carregando..."
-        cardapioContainer.innerHTML = '';
-
-
-        // AGORA SIM: Executa o loop na lista certa de produtos!
-        listaDeProdutos.forEach(produto => {
-            const cardProduto = `
-                <div class="bg-white p-4 rounded-lg shadow border border-gray-100 flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-800">${produto.name}</h3>
-                        <p class="text-gray-500 text-sm my-1">${produto.description || 'Deliciosa pizza artesanal'}</p>
-                    </div>
-                    <div class="flex items-center justify-between mt-4">
-                        <span class="text-red-600 font-bold">R$ ${parseFloat(produto.price).toFixed(2).replace('.', ',')}</span>
-                       <button 
-                            id="btn-${produto.id}"
-                            onclick="adicionarAoCarrinho(${produto.id})" 
-                            class="bg-red-500 hover:bg-red-600 active:scale-95 text-white text-xs font-bold py-2 px-3 rounded transition-all duration-150 shadow-sm active:bg-red-700">
-                            + Adicionar
-                        </button>
-                    </div>
-                </div>
-            `;
-            cardapioContainer.innerHTML += cardProduto;
-        });
+        // Renderiza o cardápio
+        renderizarCardapio();
 
     } catch (error) {
         console.error("Erro ao carregar produtos:", error);
-        cardapioContainer.innerHTML = `<p class="text-red-500 col-span-2 text-center">Erro ao processar os produtos da base de dados.</p>`;
+        cardapioContainer.innerHTML = `<p class="text-red-500 col-span-2 text-center font-semibold py-4">Erro ao processar os produtos da base de dados.</p>`;
     }
+}
+
+// 2. Renderiza os itens do cardápio de forma dinâmica
+function renderizarCardapio() {
+    if (!cardapioContainer) return;
+    cardapioContainer.innerHTML = '';
+
+    if (produtosDisponiveis.length === 0) {
+        cardapioContainer.innerHTML = `<p class="text-gray-500 col-span-2 text-center py-4">Carregando sabores deliciosos...</p>`;
+        return;
+    }
+
+    // Filtra produtos pela categoria selecionada
+    const produtosFiltrados = produtosDisponiveis.filter(p => 
+        categoriaAtiva === 'all' || p.category === categoriaAtiva
+    );
+
+    if (produtosFiltrados.length === 0) {
+        cardapioContainer.innerHTML = `<p class="text-gray-500 col-span-2 text-center py-8">Nenhum produto disponível nesta categoria no momento.</p>`;
+        return;
+    }
+
+    produtosFiltrados.forEach(produto => {
+        const itemNoCarrinho = cart.find(item => item.product_id === produto.id);
+        const qtd = itemNoCarrinho ? itemNoCarrinho.quantity : 0;
+        
+        let botaoHTML = '';
+        if (qtd > 0) {
+            botaoHTML = `
+                <div class="flex items-center bg-red-50 border border-red-200 rounded-lg overflow-hidden shadow-sm">
+                    <button onclick="alterarQuantidade(${produto.id}, -1)" class="px-3 py-1.5 text-red-600 hover:bg-red-100 active:bg-red-200 transition-colors font-bold text-sm select-none">
+                        -
+                    </button>
+                    <span class="px-2 text-red-700 font-bold text-xs min-w-[24px] text-center select-none">
+                        ${qtd}
+                    </span>
+                    <button onclick="alterarQuantidade(${produto.id}, 1)" class="px-3 py-1.5 text-red-600 hover:bg-red-100 active:bg-red-200 transition-colors font-bold text-sm select-none">
+                        +
+                    </button>
+                </div>
+            `;
+        } else {
+            botaoHTML = `
+                <button 
+                    id="btn-${produto.id}"
+                    onclick="adicionarAoCarrinho(${produto.id})" 
+                    class="bg-red-500 hover:bg-red-600 active:scale-95 text-white text-xs font-bold py-2.5 px-4 rounded transition-all duration-150 shadow-sm active:bg-red-700 select-none">
+                    + Adicionar
+                </button>
+            `;
+        }
+
+        const cardProduto = `
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md hover:border-red-100 transition-all duration-200 animate-fadeIn">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 flex items-start justify-between gap-2">
+                        <span class="leading-tight">${produto.name}</span>
+                        ${qtd > 0 ? `<span class="bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-extrabold whitespace-nowrap animate-pulse">${qtd} no carrinho</span>` : ''}
+                    </h3>
+                    <p class="text-gray-500 text-sm mt-1.5 leading-relaxed">${produto.description || 'Deliciosa pizza artesanal'}</p>
+                </div>
+                <div class="flex items-center justify-between mt-5 pt-3 border-t border-gray-50">
+                    <span class="text-red-600 font-extrabold text-lg">R$ ${parseFloat(produto.price).toFixed(2).replace('.', ',')}</span>
+                    <div id="btn-container-${produto.id}">
+                        ${botaoHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+        cardapioContainer.innerHTML += cardProduto;
+    });
+}
+
+// 3. Filtra o cardápio pela categoria (food ou drink)
+window.filtrarCategoria = function(categoria) {
+    categoriaAtiva = categoria;
+    
+    // Lista de ids dos botões de categorias
+    const botoes = {
+        all: document.getElementById('btn-cat-all'),
+        food: document.getElementById('btn-cat-food'),
+        drink: document.getElementById('btn-cat-drink')
+    };
+    
+    // Atualiza classes do Tailwind para o botão ativo e inativos
+    Object.keys(botoes).forEach(key => {
+        if (botoes[key]) {
+            if (key === categoria) {
+                botoes[key].className = "px-4 py-2 rounded-full text-xs font-bold transition-all bg-red-600 text-white shadow-sm hover:bg-red-700 select-none cursor-pointer";
+            } else {
+                botoes[key].className = "px-4 py-2 rounded-full text-xs font-bold transition-all bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 select-none cursor-pointer";
+            }
+        }
+    });
+    
+    renderizarCardapio();
 }
 
 
@@ -106,6 +180,9 @@ function atualizarInterfaceCarrinho() {
         
    
         if (floatingCart) floatingCart.classList.add('hidden');
+        
+        // Mantém o menu atualizado
+        renderizarCardapio();
         return;
     }
 
@@ -120,14 +197,29 @@ function atualizarInterfaceCarrinho() {
         totalItens += item.quantity;
 
         const itemHtml = `
-            <div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-sm">
-                <div>
-                    <p class="font-bold text-gray-800">${item.name}</p>
-                    <p class="text-xs text-gray-500">Qtd: ${item.quantity} x R$ ${item.price.toFixed(2).replace('.', ',')}</p>
+            <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100 text-sm hover:border-gray-200 transition-colors">
+                <div class="flex-1 pr-2">
+                    <p class="font-bold text-gray-800 leading-tight">${item.name}</p>
+                    <p class="text-xs text-red-600 font-semibold mt-0.5">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="font-semibold text-gray-700">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
-                    <button onclick="removerDoCarrinho(${item.product_id})" class="text-red-500 hover:text-red-700 text-xs font-bold px-1">✕</button>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center bg-white border border-gray-200 rounded-md overflow-hidden shadow-sm">
+                        <button onclick="alterarQuantidade(${item.product_id}, -1)" class="px-2.5 py-1 text-gray-500 hover:bg-gray-100 active:bg-gray-200 transition-colors font-bold text-sm select-none">
+                            -
+                        </button>
+                        <span class="px-1 text-gray-800 font-semibold min-w-[18px] text-center text-xs select-none">
+                            ${item.quantity}
+                        </span>
+                        <button onclick="alterarQuantidade(${item.product_id}, 1)" class="px-2.5 py-1 text-gray-500 hover:bg-gray-100 active:bg-gray-200 transition-colors font-bold text-sm select-none">
+                            +
+                        </button>
+                    </div>
+                    <span class="font-bold text-gray-700 text-sm min-w-[65px] text-right">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
+                    <button onclick="removerItemCompleto(${item.product_id})" class="text-gray-400 hover:text-red-500 p-1 transition-colors" title="Remover do carrinho">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         `;
@@ -145,22 +237,30 @@ function atualizarInterfaceCarrinho() {
         floatingCount.innerText = totalItens;
         floatingTotal.innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
     }
+
+    // Atualiza os botões no cardápio de produtos em tempo real
+    renderizarCardapio();
 }
-window.removerDoCarrinho = function(id) {
-    const index = cart.findIndex(item => item.product_id === id);
 
-    if (index !== -1) {
-        if (cart[index].quantity > 1) {
-            cart[index].quantity -= 1; 
-        } else {
-            cart.splice(index, 1); 
+// 5. Altera a quantidade de um item no carrinho
+window.alterarQuantidade = function(id, delta) {
+    const item = cart.find(item => item.product_id === id);
+    if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+            cart = cart.filter(item => item.product_id !== id);
         }
+        atualizarInterfaceCarrinho();
     }
+}
 
+// 6. Remove o item inteiro do carrinho
+window.removerItemCompleto = function(id) {
+    cart = cart.filter(item => item.product_id !== id);
     atualizarInterfaceCarrinho();
 }
 
-// 5. Função para esvaziar o carrinho por completo
+// 7. Função para esvaziar o carrinho por completo
 window.limparCarrinho = function() {
     // Um double-check amigável para o cliente não limpar sem querer no celular
     if (confirm("Tem certeza que deseja limpar o seu carrinho?")) {
@@ -264,3 +364,27 @@ checkoutForm.addEventListener('submit', async (event) => {
         btnEnviar.disabled = false;
     }
 });
+
+// Máscara de telefone / WhatsApp
+const phoneInput = document.getElementById('form-phone');
+if (phoneInput) {
+    phoneInput.addEventListener('input', (event) => {
+        let value = event.target.value.replace(/\D/g, ""); // Remove tudo que não for número
+        
+        if (value.length > 11) {
+            value = value.slice(0, 11);
+        }
+
+        if (value.length > 10) {
+            value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+        } else if (value.length > 6) {
+            value = value.replace(/^(\d{2})(\d{4})(\d{0,4})$/, "($1) $2-$3");
+        } else if (value.length > 2) {
+            value = value.replace(/^(\d{2})(\d{0,4})$/, "($1) $2");
+        } else if (value.length > 0) {
+            value = value.replace(/^(\d*)$/, "($1");
+        }
+        
+        event.target.value = value;
+    });
+}
