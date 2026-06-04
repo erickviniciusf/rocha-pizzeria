@@ -30,6 +30,7 @@ CREATE TABLE orders (
   client_id int NOT NULL,
   payment_method varchar(100) NOT NULL,
   status enum('received','preparing','finished') NOT NULL DEFAULT 'received',
+  obs varchar(255) DEFAULT NULL,
   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY client_id (client_id),

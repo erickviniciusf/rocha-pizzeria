@@ -9,12 +9,54 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
-    <header class="bg-red-600 text-white text-center py-8 shadow-md">
-        <h1 class="text-4xl font-extrabold tracking-wide">PIZZARIA DOS ROCHA!</h1>
-        <p class="text-sm mt-2 opacity-90">O verdadeiro sabor da pizza na sua casa</p>
-    </header>
+    <!-- TELA DE BOAS-VINDAS (WELCOME VIEW) -->
+    <div id="welcome-view" class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-red-800 via-red-600 to-orange-600 p-6 text-white text-center relative overflow-hidden transition-all duration-500 ease-in-out">
+        <!-- Detalhes de decoração de fundo -->
+        <div class="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-10 -right-10 w-60 h-60 bg-yellow-500/10 rounded-full blur-3xl"></div>
 
-    <main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="max-w-md w-full bg-black/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-6 animate-fadeIn">
+            <!-- Ícone/Logo de Pizza decorado -->
+            <div class="bg-white text-red-600 p-5 rounded-full shadow-lg border-2 border-yellow-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15.93c-3.14-.4-5.53-3.07-5.53-6.23H13v6.23zm0-7.73H7.83c.36-2.5 2.15-4.5 4.54-4.92v4.92zm2 7.73V10.2h5.53c0 3.16-2.39 5.83-5.53 6.23zm0-7.73V5.28c2.39.42 4.18 2.42 4.54 4.92H15z" />
+                </svg>
+            </div>
+
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-wide uppercase text-yellow-300">Pizzaria dos Rocha</h1>
+                <p class="text-sm mt-2 text-red-100 font-medium leading-relaxed">O verdadeiro sabor da pizza assada no forno a lenha, com ingredientes frescos selecionados.</p>
+            </div>
+
+            <!-- Informações Rápidas -->
+            <div class="grid grid-cols-2 gap-3 w-full text-xs font-semibold mt-2">
+                <div id="status-funcionamento" class="bg-black/40 p-3 rounded-xl border border-white/10 flex flex-col items-center justify-center gap-1 min-h-[58px]">
+                    <span class="text-green-400 font-bold">🟢 Aberto agora</span>
+                    <span class="text-[10px] text-gray-300 opacity-90">18:00h às 23:30h</span>
+                </div>
+                <div class="bg-black/40 p-3 rounded-xl border border-white/10 flex flex-col items-center justify-center gap-1">
+                    <span class="text-yellow-300 font-bold">🛵 Delivery rápido</span>
+                    <span class="text-[10px] text-gray-300 opacity-90">Receba quentinha</span>
+                </div>
+            </div>
+
+            <!-- Botão de Ação -->
+            <button onclick="entrarNoCardapio()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-red-950 font-black py-4 px-6 rounded-xl text-base uppercase tracking-wider transition-all duration-300 shadow-lg hover:shadow-yellow-400/20 transform hover:-translate-y-0.5 active:scale-95 cursor-pointer">
+                🍕 Ver Cardápio & Pedir
+            </button>
+        </div>
+
+        <p class="text-[10px] text-white/40 absolute bottom-6 font-medium uppercase tracking-widest">Pizzaria dos Rocha © 2026</p>
+    </div>
+
+    <!-- VIEW PRINCIPAL DO CARDÁPIO (INICIALMENTE OCULTA) -->
+    <div id="menu-view" class="hidden transition-all duration-500 ease-in-out">
+        <header class="bg-red-600 text-white text-center py-8 shadow-md">
+            <h1 class="text-4xl font-extrabold tracking-wide">PIZZARIA DOS ROCHA!</h1>
+            <p class="text-sm mt-2 opacity-90">O verdadeiro sabor da pizza na sua casa</p>
+        </header>
+
+        <main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
         
         <section class="md:col-span-2">
             <h2 class="text-2xl font-bold mb-4 border-b-2 border-red-500 pb-2">🍕 Nosso Cardápio</h2>
@@ -80,6 +122,10 @@
                         <option value="Dinheiro">Dinheiro</option>
                     </select>
                 </div>
+                <div>
+                    <label class="text-xs text-gray-500 font-medium">Observações (opcional)</label>
+                    <textarea id="form-obs" placeholder="Ex: Tirar cebola, trocar refrigerante por guaraná, etc." class="w-full p-2 border rounded text-sm focus:outline-red-500 h-16 resize-none"></textarea>
+                </div>
 
                 <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded transition-all mt-4">
                     🟢 Enviar Pedido para o WhatsApp
@@ -100,5 +146,6 @@
             <span id="floating-cart-total" class="ml-1 text-sm font-semibold">R$ 0,00</span>
         </div>
     </a>
+    </div>
 </body>
 </html>

@@ -81,6 +81,14 @@ npm install
 node src/index.js
 ```
 
-## Status
+## Status & Changelog
 
-Currently in development. MVP in progress.
+Currently in development.
+
+### Version 1.1.1
+- **Welcome Reception Page**: Beautiful responsive home/welcome view with wood-fired theme, glassmorphism card, and smooth animations.
+- **Dynamic Business Hours Checker**: Automatic open/closed status detection based on Brasilia (DF) timezone.
+- **Interactive Quantity Controls**: Custom `- / +` selectors on both menu cards and cart items, fully synchronized in real-time.
+- **Order Observations**: Added `obs` column to database, a responsive input on checkout, and formatting in the final WhatsApp order.
+- **Phone Formatting Mask**: Automatic mask formatting (`(XX) XXXXX-XXXX`) for phone inputs during typing.
+- **Category Filter Tabs**: Quick filtering for menu items ("Todos", "Pizzas", "Bebidas").

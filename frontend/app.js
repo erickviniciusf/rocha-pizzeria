@@ -269,7 +269,44 @@ window.limparCarrinho = function() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', carregarProdutos);
+// 8. Verifica se a pizzaria está aberta com base no fuso de Brasília (DF)
+function verificarHorarioFuncionamento() {
+    const statusContainer = document.getElementById('status-funcionamento');
+    if (!statusContainer) return;
+    
+    try {
+        // Obter data/hora atual no fuso horário de Brasília (America/Sao_Paulo)
+        const options = { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false };
+        const horaBrasiliaStr = new Intl.DateTimeFormat('pt-BR', options).format(new Date());
+        
+        // horaBrasiliaStr estará no formato "HH:MM"
+        const [horas, minutos] = horaBrasiliaStr.split(':').map(Number);
+        const tempoAtualEmMinutos = horas * 60 + minutos;
+        
+        // Horário de funcionamento: 18:00 (1080 min) às 23:30 (1410 min)
+        const limiteAbertura = 18 * 60;
+        const limiteFechamento = 23 * 60 + 30;
+        
+        if (tempoAtualEmMinutos >= limiteAbertura && tempoAtualEmMinutos <= limiteFechamento) {
+            statusContainer.innerHTML = `
+                <span class="text-green-400 font-bold">🟢 Aberto agora</span>
+                <span class="text-[10px] text-gray-300 opacity-90">18:00h às 23:30h</span>
+            `;
+        } else {
+            statusContainer.innerHTML = `
+                <span class="text-red-400 font-bold">🔴 Fechado agora</span>
+                <span class="text-[10px] text-gray-300 opacity-90 font-semibold">Abre às 18:00h</span>
+            `;
+        }
+    } catch (e) {
+        console.error("Erro ao verificar fuso horário de Brasília:", e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    carregarProdutos();
+    verificarHorarioFuncionamento();
+});
 
 // 6. Lógica de Envio do Pedido (Integração API + WhatsApp)
 checkoutForm.addEventListener('submit', async (event) => {
@@ -281,6 +318,7 @@ checkoutForm.addEventListener('submit', async (event) => {
     const phone_number = document.getElementById('form-phone').value;
     const address = document.getElementById('form-address').value;
     const payment_method = document.getElementById('form-payment').value;
+    const obs = document.getElementById('form-obs').value;
 
     // Monta o payload exatamente como seu backend/Postman esperam
     // Mapeamos o carrinho para enviar apenas o product_id e a quantity
@@ -289,6 +327,7 @@ checkoutForm.addEventListener('submit', async (event) => {
         phone_number: phone_number,
         address: address,
         payment_method: payment_method,
+        obs: obs,
         cart: cart.map(item => ({
             product_id: item.product_id,
             quantity: item.quantity
@@ -323,6 +362,11 @@ checkoutForm.addEventListener('submit', async (event) => {
         mensagemWhatsapp += `*Telefone:* ${phone_number}\n`;
         mensagemWhatsapp += `*Endereço:* ${address}\n`;
         mensagemWhatsapp += `*Forma de Pagamento:* ${payment_method}\n\n`;
+        
+        if (obs.trim() !== "") {
+            mensagemWhatsapp += `*Observações:* ${obs}\n\n`;
+        }
+
         mensagemWhatsapp += `*🛒 ITENS DO PEDIDO:*\n`;
 
         let totalGeral = 0;
@@ -387,4 +431,30 @@ if (phoneInput) {
         
         event.target.value = value;
     });
+}
+
+// 8. Transição suave da tela de boas-vindas para o cardápio
+window.entrarNoCardapio = function() {
+    const welcomeView = document.getElementById('welcome-view');
+    const menuView = document.getElementById('menu-view');
+    
+    if (welcomeView && menuView) {
+        welcomeView.classList.add('opacity-0', '-translate-y-4');
+        
+        setTimeout(() => {
+            welcomeView.classList.add('hidden');
+            menuView.classList.remove('hidden');
+            
+            // Adiciona classes iniciais de opacidade para a transição suave
+            menuView.classList.add('opacity-0', 'translate-y-4');
+            
+            // Força o navegador a renderizar o estado oculto antes de animar
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    menuView.classList.remove('opacity-0', 'translate-y-4');
+                    menuView.classList.add('opacity-100', 'translate-y-0');
+                }, 50);
+            });
+        }, 500);
+    }
 }
